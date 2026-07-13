@@ -1,7 +1,8 @@
 # KuKi Design System
 
-Design system for **KuKi** — the intelligent health companion for your furbabies. Lives in two
-places, kept in sync:
+Kuki is an intelligent health companion app for your furbabies :)
+
+Design system for **KuKi**. Lives in two places, kept in sync:
 
 - **Figma**: [KuKi Design System](https://www.figma.com/design/lk7PRy9xnmLg1caaio6ROS/KuKi-Design-System) — variables, text styles, and the full component library.
 - **Code**: this folder — token source of truth, CSS custom properties, and React components.
