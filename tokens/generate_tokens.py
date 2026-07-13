@@ -272,6 +272,18 @@ SEM_SPACE = {
     'space/section-lg': 'size/12', 'space/section-xl': 'size/14',
 }
 
+# icon sizes — must be visibly distinct per step, or "scaling" reads as broken even
+# when technically correct (12px vs 16px vs 20px is obvious; 16 vs 16 is not).
+ICON_SIZE = {
+    'icon-size/3xs': 'size/2',  # 4
+    'icon-size/2xs': 'size/3',  # 8
+    'icon-size/xs': 'size/4',   # 12
+    'icon-size/sm': 'size/5',   # 16
+    'icon-size/md': 'size/6',   # 20
+    'icon-size/lg': 'size/7',   # 24
+    'icon-size/xl': 'size/9',   # 32
+}
+
 FONT_FAMILY = 'Google Sans Flex'
 FONT_STYLES = {'extralight': 'ExtraLight', 'light': 'Light', 'regular': 'Regular',
                'medium': 'Medium', 'semibold': 'SemiBold', 'bold': 'Bold'}
@@ -347,7 +359,7 @@ def emit():
                                       'lineHeight': LINE_HEIGHT, 'tracking': TRACKING},
                        'number': NUMBER, 'shadow': SHADOWS, 'gradients': GRADIENTS},
         'semantic': {'color': SEMANTIC_COLOR, 'radius': SEM_RADIUS, 'space': SEM_SPACE,
-                     'number': SEM_NUMBER, 'textStyles': TEXT_STYLES},
+                     'iconSize': ICON_SIZE, 'number': SEM_NUMBER, 'textStyles': TEXT_STYLES},
     }
     with open(os.path.join(out_dir, 'tokens.json'), 'w') as f:
         json.dump(tokens, f, indent=2)
@@ -362,7 +374,7 @@ def emit():
                                'darkRef': m['dark'] if '/' in m['dark'] or m['dark'] in BASE else None}
                            for n, m in SEMANTIC_COLOR.items()},
         'dimension': DIMENSION, 'radius': RADIUS, 'sem_radius': SEM_RADIUS,
-        'sem_space': SEM_SPACE, 'number': NUMBER, 'sem_number': SEM_NUMBER,
+        'sem_space': SEM_SPACE, 'sem_icon_size': ICON_SIZE, 'number': NUMBER, 'sem_number': SEM_NUMBER,
         'font': {'family': FONT_FAMILY, 'styles': FONT_STYLES, 'weights': FONT_WEIGHTS,
                  'size': FONT_SIZE, 'lineHeight': LINE_HEIGHT, 'tracking': TRACKING},
         'text_styles': TEXT_STYLES, 'shadows': SHADOWS, 'gradients': GRADIENTS,
@@ -385,6 +397,8 @@ def emit():
         lines.append(f'  {css_name("sem-" + k)}: var({css_name(ref)});')
     for k, ref in SEM_SPACE.items():
         lines.append(f'  {css_name(k)}: var({css_name(ref)});')
+    for k, ref in ICON_SIZE.items():
+        lines.append(f'  {css_name(k)}: var({css_name(ref)});')
     for k, v in NUMBER.items():
         lines.append(f'  {css_name(k)}: {v};')
     for k, ref in SEM_NUMBER.items():
@@ -400,7 +414,9 @@ def emit():
         parts = [f'0 {s["y"]}px {s["blur"]}px rgba(16,16,16,{s["alpha"]})' for s in shadow]
         lines.append(f'  {css_name(name)}: {", ".join(parts)};')
     for name, stops in GRADIENTS.items():
-        lines.append(f'  {css_name("gradient-" + name)}: radial-gradient(100% 100% at 50% 50%, {stops[0]} 0%, {stops[1]} 40%, {stops[2]} 60%, {stops[-1]} 100%);')
+        # CSS's `circle` keyword computes an equal-radius circle regardless of the
+        # box's own aspect ratio — unlike Figma, which needs a compensating matrix.
+        lines.append(f'  {css_name("gradient-" + name)}: radial-gradient(circle at 50% 50%, {stops[0]} 0%, {stops[1]} 40%, {stops[2]} 60%, {stops[-1]} 100%);')
     lines.append('}')
 
     def mode_block(selector, mode):

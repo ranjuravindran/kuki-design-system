@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Avatar } from './Avatar';
-import { IconButton } from './IconButton';
+import { Button } from './Button';
 import { AIOrb } from './AIOrb';
 
 export interface BottomBarProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -32,11 +32,18 @@ export function BottomBar({
         </svg>
       </button>
       <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-        <IconButton appearance="emphasis" size="lg" label="Add entry" onClick={onAdd}>
-          <svg width="24" height="24" viewBox="0 -960 960 960" fill="currentColor" aria-hidden>
-            <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
-          </svg>
-        </IconButton>
+        <Button
+          appearance="emphasis"
+          size="lg"
+          iconOnly
+          label="Add entry"
+          onClick={onAdd}
+          icon={
+            <svg width="24" height="24" viewBox="0 -960 960 960" fill="currentColor" aria-hidden>
+              <path d="M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z" />
+            </svg>
+          }
+        />
         {showAI && <AIOrb onClick={onAI} />}
       </div>
     </div>

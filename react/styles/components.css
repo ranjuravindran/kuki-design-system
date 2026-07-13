@@ -5,14 +5,13 @@
   color: var(--kuki-sem-text-default);
 }
 
-/* ---------- Button ---------- */
+/* ---------- Button (unified: labeled pill + circular icon-only) ---------- */
 .kuki-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--kuki-size-3);
   border: none;
-  border-radius: var(--kuki-radius-pill);
+  border-radius: var(--kuki-sem-radius-control);
   font-family: var(--kuki-font-family);
   font-weight: var(--kuki-font-weight-medium);
   cursor: pointer;
@@ -23,17 +22,52 @@
   outline: 2px solid var(--kuki-sem-border-focus);
   outline-offset: 2px;
 }
-.kuki-btn--sm { padding: var(--kuki-size-3) var(--kuki-size-5); font-size: var(--kuki-font-size-xs); line-height: var(--kuki-line-height-xs); gap: var(--kuki-size-2); }
-.kuki-btn--md { padding: var(--kuki-size-4) var(--kuki-size-6); font-size: var(--kuki-font-size-sm); line-height: var(--kuki-line-height-sm); }
-.kuki-btn--lg { padding: var(--kuki-size-5) var(--kuki-size-7); font-size: var(--kuki-font-size-md); line-height: var(--kuki-line-height-md); font-weight: var(--kuki-font-weight-semibold); }
 
+/* labeled sizing (outer padding = edge distance for leadingIcon/trailingIcon;
+   inner .kuki-btn__content gap below is independent, for adornments hugging the label) */
+.kuki-btn--sm { padding: var(--kuki-size-3) var(--kuki-size-5); gap: var(--kuki-size-2); font-size: var(--kuki-font-size-xs); line-height: var(--kuki-line-height-xs); }
+.kuki-btn--md { padding: var(--kuki-size-4) var(--kuki-size-6); gap: var(--kuki-size-3); font-size: var(--kuki-font-size-sm); line-height: var(--kuki-line-height-sm); }
+.kuki-btn--lg { padding: var(--kuki-size-5) var(--kuki-size-7); gap: var(--kuki-size-3); font-size: var(--kuki-font-size-md); line-height: var(--kuki-line-height-md); font-weight: var(--kuki-font-weight-semibold); }
+
+/* icon-only: fixed square (old IconButton) instead of hug-padded pill */
+.kuki-btn--icon-only { padding: 0; gap: 0; }
+.kuki-btn--icon-only.kuki-btn--sm { width: 32px; height: 32px; }
+.kuki-btn--icon-only.kuki-btn--md { width: 40px; height: 40px; }
+.kuki-btn--icon-only.kuki-btn--lg { width: 56px; height: 56px; }
+
+/* icon slots — distinct sizes per button size so scaling actually reads */
+.kuki-btn__icon { display: inline-flex; flex-shrink: 0; }
+.kuki-btn__icon svg, .kuki-btn__icon img { display: block; width: 100%; height: 100%; }
+.kuki-btn--sm .kuki-btn__icon { width: var(--kuki-icon-size-xs); height: var(--kuki-icon-size-xs); }
+.kuki-btn--md .kuki-btn__icon { width: var(--kuki-icon-size-sm); height: var(--kuki-icon-size-sm); }
+.kuki-btn--lg .kuki-btn__icon { width: var(--kuki-icon-size-md); height: var(--kuki-icon-size-md); }
+.kuki-btn--icon-only.kuki-btn--sm .kuki-btn__icon { width: var(--kuki-icon-size-sm); height: var(--kuki-icon-size-sm); }
+.kuki-btn--icon-only.kuki-btn--md .kuki-btn__icon { width: var(--kuki-icon-size-md); height: var(--kuki-icon-size-md); }
+.kuki-btn--icon-only.kuki-btn--lg .kuki-btn__icon { width: var(--kuki-icon-size-lg); height: var(--kuki-icon-size-lg); }
+
+/* content group: label + its hugging adornments, own consistent gap
+   independent of the outer leadingIcon/trailingIcon gap */
+.kuki-btn__content { display: inline-flex; align-items: center; gap: inherit; }
+
+/* appearance: primary */
 .kuki-btn--primary { background: var(--kuki-sem-surface-brand); color: var(--kuki-sem-text-on-brand); }
 .kuki-btn--primary:hover { background: var(--kuki-sem-surface-brand-hover); }
 .kuki-btn--primary:active { background: var(--kuki-sem-surface-brand-pressed); }
+.kuki-btn--primary.kuki--selected { background: var(--kuki-sem-surface-brand-pressed); }
 .kuki-btn--primary.kuki--destructive { background: var(--kuki-sem-surface-status-critical); }
 .kuki-btn--primary.kuki--destructive:hover { background: var(--kuki-sem-surface-status-critical-hover); }
 .kuki-btn--primary.kuki--destructive:active { background: var(--kuki-sem-surface-status-critical-pressed); }
 
+/* appearance: emphasis (chocolate — FAB, high-emphasis CTAs) */
+.kuki-btn--emphasis { background: var(--kuki-sem-surface-emphasis); color: var(--kuki-sem-text-on-emphasis); }
+.kuki-btn--emphasis:hover { background: var(--kuki-sem-surface-emphasis-hover); }
+.kuki-btn--emphasis:active { background: var(--kuki-sem-surface-emphasis-pressed); }
+.kuki-btn--emphasis.kuki--selected { background: var(--kuki-sem-surface-emphasis-pressed); }
+.kuki-btn--emphasis.kuki--destructive { background: var(--kuki-sem-surface-status-critical); }
+.kuki-btn--emphasis.kuki--destructive:hover { background: var(--kuki-sem-surface-status-critical-hover); }
+.kuki-btn--emphasis.kuki--destructive:active { background: var(--kuki-sem-surface-status-critical-pressed); }
+
+/* appearance: secondary */
 .kuki-btn--secondary {
   background: var(--kuki-sem-surface-default);
   color: var(--kuki-sem-text-default);
@@ -41,69 +75,51 @@
 }
 .kuki-btn--secondary:hover { background: var(--kuki-sem-surface-canvas); }
 .kuki-btn--secondary:active { background: var(--kuki-sem-surface-sunken); }
+.kuki-btn--secondary.kuki--selected { background: var(--kuki-sem-surface-selected); border-color: var(--kuki-sem-border-selected); color: var(--kuki-sem-text-brand); }
 .kuki-btn--secondary.kuki--destructive { color: var(--kuki-sem-text-status-critical); border-color: var(--kuki-sem-border-status-critical); }
 .kuki-btn--secondary.kuki--destructive:hover { background: var(--kuki-sem-surface-status-critical-subtle); }
 .kuki-btn--secondary.kuki--destructive:active { background: var(--kuki-sem-surface-status-critical-subtle-pressed); }
+.kuki-btn--secondary.kuki--destructive.kuki--selected { background: var(--kuki-sem-surface-status-critical-subtle); }
 
+/* appearance: ghost */
 .kuki-btn--ghost { background: transparent; color: var(--kuki-sem-text-default); }
 .kuki-btn--ghost:hover { background: var(--kuki-sem-surface-canvas); }
 .kuki-btn--ghost:active { background: var(--kuki-sem-surface-sunken); }
+.kuki-btn--ghost.kuki--selected { background: var(--kuki-sem-surface-selected); color: var(--kuki-sem-text-brand); }
 .kuki-btn--ghost.kuki--destructive { color: var(--kuki-sem-text-status-critical); }
 .kuki-btn--ghost.kuki--destructive:hover { background: var(--kuki-sem-surface-status-critical-subtle); }
+.kuki-btn--ghost.kuki--destructive.kuki--selected { background: var(--kuki-sem-surface-status-critical-subtle); }
 
+/* appearance: link (labeled use only — no chrome ever, even selected/icon-only) */
 .kuki-btn--link { background: transparent; color: var(--kuki-sem-text-link); padding: var(--kuki-size-2); }
 .kuki-btn--link:hover, .kuki-btn--link:active { text-decoration: underline; }
 .kuki-btn--link.kuki--destructive { color: var(--kuki-sem-text-status-critical); }
 
-.kuki-btn:disabled, .kuki-btn[aria-disabled='true'] {
-  background: var(--kuki-sem-surface-disabled);
-  color: var(--kuki-sem-text-disabled);
-  border-color: var(--kuki-sem-border-disabled);
+/* disabled and loading share the same "blocked" treatment — loading is never
+   just an overlay on top of the normal appearance, per design review */
+.kuki-btn:disabled,
+.kuki-btn[aria-disabled='true'],
+.kuki-btn--loading {
+  background: var(--kuki-sem-surface-disabled) !important;
+  color: var(--kuki-sem-text-disabled) !important;
+  border-color: var(--kuki-sem-border-disabled) !important;
   cursor: not-allowed;
   text-decoration: none;
+  pointer-events: none;
 }
-.kuki-btn--ghost:disabled, .kuki-btn--link:disabled { background: transparent; }
+.kuki-btn--ghost:disabled, .kuki-btn--link:disabled,
+.kuki-btn--ghost.kuki-btn--loading, .kuki-btn--link.kuki-btn--loading {
+  background: var(--kuki-sem-surface-disabled) !important;
+}
 
 .kuki-btn__spinner {
-  width: 1em; height: 1em;
+  width: 100%; height: 100%;
   border: 2px solid currentColor;
   border-right-color: transparent;
   border-radius: 50%;
   animation: kuki-spin 0.7s linear infinite;
 }
 @keyframes kuki-spin { to { transform: rotate(360deg); } }
-.kuki-btn--loading .kuki-btn__label { visibility: hidden; }
-.kuki-btn--loading { position: relative; }
-.kuki-btn--loading .kuki-btn__spinner { position: absolute; left: 50%; top: 50%; margin: -0.5em 0 0 -0.5em; }
-
-/* ---------- Icon Button ---------- */
-.kuki-iconbtn {
-  display: inline-flex; align-items: center; justify-content: center;
-  border: none; border-radius: var(--kuki-radius-pill); cursor: pointer;
-  background: transparent; color: var(--kuki-sem-icon-default);
-  transition: background-color 120ms ease, color 120ms ease;
-}
-.kuki-iconbtn:focus-visible { outline: 2px solid var(--kuki-sem-border-focus); outline-offset: 2px; }
-.kuki-iconbtn--sm { width: 32px; height: 32px; }
-.kuki-iconbtn--md { width: 40px; height: 40px; }
-.kuki-iconbtn--lg { width: 56px; height: 56px; }
-.kuki-iconbtn--primary { background: var(--kuki-sem-surface-brand); color: var(--kuki-sem-icon-on-brand); }
-.kuki-iconbtn--primary:hover { background: var(--kuki-sem-surface-brand-hover); }
-.kuki-iconbtn--primary:active { background: var(--kuki-sem-surface-brand-pressed); }
-.kuki-iconbtn--emphasis { background: var(--kuki-sem-surface-emphasis); color: var(--kuki-sem-icon-on-emphasis); }
-.kuki-iconbtn--emphasis:hover { background: var(--kuki-sem-surface-emphasis-hover); }
-.kuki-iconbtn--emphasis:active { background: var(--kuki-sem-surface-emphasis-pressed); }
-.kuki-iconbtn--secondary { background: var(--kuki-sem-surface-default); border: 1px solid var(--kuki-sem-border-default); }
-.kuki-iconbtn--secondary:hover { background: var(--kuki-sem-surface-canvas); }
-.kuki-iconbtn--ghost:hover { background: var(--kuki-sem-surface-canvas); }
-.kuki-iconbtn[aria-pressed='true'] { background: var(--kuki-sem-surface-selected); color: var(--kuki-sem-icon-brand); }
-.kuki-iconbtn--secondary[aria-pressed='true'] { border-color: var(--kuki-sem-border-selected); }
-.kuki-iconbtn--primary[aria-pressed='true'] { background: var(--kuki-sem-surface-brand-pressed); color: var(--kuki-sem-icon-on-brand); }
-.kuki-iconbtn--emphasis[aria-pressed='true'] { background: var(--kuki-sem-surface-emphasis-pressed); color: var(--kuki-sem-icon-on-emphasis); }
-.kuki-iconbtn.kuki--destructive { color: var(--kuki-sem-icon-status-critical); }
-.kuki-iconbtn--primary.kuki--destructive { background: var(--kuki-sem-surface-status-critical); color: var(--kuki-sem-icon-on-brand); }
-.kuki-iconbtn:disabled { background: var(--kuki-sem-surface-disabled); color: var(--kuki-sem-icon-disabled); cursor: not-allowed; }
-.kuki-iconbtn--ghost:disabled { background: transparent; }
 
 /* ---------- Badge & Chip ---------- */
 .kuki-badge {
@@ -270,8 +286,8 @@
 .kuki-ai-orb__sparkle {
   position: relative;
   z-index: 1;
-  width: 62%;
-  height: 62%;
+  width: 45%;
+  height: 45%;
   display: block;
   pointer-events: none;
 }

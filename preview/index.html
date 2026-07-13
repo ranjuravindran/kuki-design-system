@@ -275,7 +275,7 @@ color: var(--kuki-sem-text-on-brand);</code>
     <div class="panel-head">
       <div class="kicker">Components</div>
       <h1>Buttons</h1>
-      <p>4 appearances × 2 tones × 5 states × 3 sizes = 120 variants in Figma. A representative set below; full matrix on the Button page.</p>
+      <p>One unified <code>Button</code> component — the old separate <code>IconButton</code> is now just <code>iconOnly</code>. 5 appearances × 2 tones × 6 states (incl. <code>loading</code>) × 3 sizes × icon-only × selected = 720 variants in Figma. A representative set below; full matrix on the Button page.</p>
     </div>
     <section class="block">
       <h2>Appearance</h2>
@@ -284,36 +284,74 @@ color: var(--kuki-sem-text-on-brand);</code>
         <button class="kuki-btn kuki-btn--secondary kuki-btn--md">View as Guest</button>
         <button class="kuki-btn kuki-btn--ghost kuki-btn--md">Skip</button>
         <button class="kuki-btn kuki-btn--link kuki-btn--md">Learn more</button>
+        <button class="kuki-btn kuki-btn--emphasis kuki-btn--md">Get started</button>
       </div>
       <code class="snip">&lt;Button appearance="primary" size="lg"&gt;Start tracking&lt;/Button&gt;
 &lt;Button appearance="secondary"&gt;View as Guest&lt;/Button&gt;
 &lt;Button appearance="ghost"&gt;Skip&lt;/Button&gt;
-&lt;Button appearance="link"&gt;Learn more&lt;/Button&gt;</code>
+&lt;Button appearance="link"&gt;Learn more&lt;/Button&gt;
+&lt;Button appearance="emphasis"&gt;Get started&lt;/Button&gt;</code>
     </section>
     <section class="block">
-      <h2>Tone &amp; state</h2>
+      <h2>Icon slots</h2>
+      <p class="desc">4 independent slots: outer <code>leadingIcon</code>/<code>trailingIcon</code> sit at the button's own edge padding; inner <code>leadingAdornment</code>/<code>trailingAdornment</code> hug the label inside their own content group, at a gap that's independent of the outer icons.</p>
+      <div class="row">
+        <button class="kuki-btn kuki-btn--emphasis kuki-btn--lg">
+          <span class="kuki-btn__icon">${'{{home}}'}</span>
+          <span class="kuki-btn__content">
+            <span class="kuki-btn__icon">${'{{check}}'}</span>
+            <span class="kuki-btn__label">Content</span>
+            <span class="kuki-btn__icon">${'{{check}}'}</span>
+          </span>
+          <span class="kuki-btn__icon">${'{{home}}'}</span>
+        </button>
+      </div>
+      <code class="snip">&lt;Button appearance="emphasis" size="lg"
+  leadingIcon={&lt;HomeIcon/&gt;} leadingAdornment={&lt;CheckIcon/&gt;}
+  trailingAdornment={&lt;CheckIcon/&gt;} trailingIcon={&lt;HomeIcon/&gt;}&gt;
+  Content
+&lt;/Button&gt;</code>
+    </section>
+    <section class="block">
+      <h2>Icon scaling by size</h2>
+      <p class="desc">Icons are bound to distinct size tokens per button size (12 / 16 / 20px labeled, 16 / 20 / 24px icon-only) — not a single fixed size stretched to fit.</p>
+      <div class="row" style="align-items:flex-start; flex-direction:column; gap:12px">
+        <button class="kuki-btn kuki-btn--primary kuki-btn--sm"><span class="kuki-btn__icon">${'{{add}}'}</span><span class="kuki-btn__content"><span class="kuki-btn__label">Start tracking</span></span></button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md"><span class="kuki-btn__icon">${'{{add}}'}</span><span class="kuki-btn__content"><span class="kuki-btn__label">Start tracking</span></span></button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--lg"><span class="kuki-btn__icon">${'{{add}}'}</span><span class="kuki-btn__content"><span class="kuki-btn__label">Start tracking</span></span></button>
+      </div>
+    </section>
+    <section class="block">
+      <h2>Tone, disabled &amp; loading</h2>
+      <p class="desc"><code>loading</code> is never an overlay on the normal appearance — it forces the same blocked look as <code>disabled</code>, with a spinner as the leading adornment next to editable text.</p>
       <div class="row">
         <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki--destructive">Log seizure</button>
         <button class="kuki-btn kuki-btn--secondary kuki-btn--md kuki--destructive">Delete record</button>
         <button class="kuki-btn kuki-btn--primary kuki-btn--md" disabled>Disabled</button>
-        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki-btn--loading"><span class="kuki-btn__label">Saving…</span><span class="kuki-btn__spinner"></span></button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki-btn--loading" disabled>
+          <span class="kuki-btn__content">
+            <span class="kuki-btn__icon kuki-btn__spinner"></span>
+            <span class="kuki-btn__label">Please wait</span>
+          </span>
+        </button>
       </div>
       <code class="snip">&lt;Button appearance="primary" tone="destructive"&gt;Log seizure&lt;/Button&gt;
-&lt;Button appearance="primary" loading&gt;Saving…&lt;/Button&gt;
+&lt;Button appearance="primary" loading&gt;Please wait&lt;/Button&gt;
 &lt;Button appearance="primary" disabled&gt;Disabled&lt;/Button&gt;</code>
     </section>
     <section class="block">
-      <h2>Icon Button</h2>
-      <p class="desc">Same appearance/tone/state system, plus a dedicated <code>emphasis</code> appearance (warm chocolate) for the FAB, and a <code>selected</code> boolean.</p>
+      <h2>Icon-only (<code>iconOnly</code>)</h2>
+      <p class="desc">Same appearance/tone/state/loading system as labeled buttons — just <code>iconOnly</code> forcing a fixed circular shape instead of a hug-padded pill. This replaces the old separate <code>IconButton</code>.</p>
       <div class="row">
-        <button class="kuki-iconbtn kuki-iconbtn--emphasis kuki-iconbtn--lg" aria-label="Add">${'{{add}}'}</button>
-        <button class="kuki-iconbtn kuki-iconbtn--primary kuki-iconbtn--md" aria-label="Edit">${'{{edit}}'}</button>
-        <button class="kuki-iconbtn kuki-iconbtn--secondary kuki-iconbtn--md" aria-label="Search">${'{{search}}'}</button>
-        <button class="kuki-iconbtn kuki-iconbtn--ghost kuki-iconbtn--md" aria-pressed="true" aria-label="Favourite selected">${'{{favorite}}'}</button>
-        <button class="kuki-iconbtn kuki-iconbtn--secondary kuki-iconbtn--md" aria-label="Delete" disabled>${'{{close}}'}</button>
+        <button class="kuki-btn kuki-btn--emphasis kuki-btn--lg kuki-btn--icon-only" aria-label="Add"><span class="kuki-btn__icon">${'{{add}}'}</span></button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki-btn--icon-only" aria-label="Edit"><span class="kuki-btn__icon">${'{{edit}}'}</span></button>
+        <button class="kuki-btn kuki-btn--secondary kuki-btn--md kuki-btn--icon-only" aria-label="Search"><span class="kuki-btn__icon">${'{{search}}'}</span></button>
+        <button class="kuki-btn kuki-btn--ghost kuki-btn--md kuki-btn--icon-only kuki--selected" aria-pressed="true" aria-label="Favourite selected"><span class="kuki-btn__icon">${'{{favorite}}'}</span></button>
+        <button class="kuki-btn kuki-btn--secondary kuki-btn--md kuki-btn--icon-only" aria-label="Delete" disabled><span class="kuki-btn__icon">${'{{close}}'}</span></button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki-btn--icon-only kuki-btn--loading" aria-label="Loading" disabled><span class="kuki-btn__icon kuki-btn__spinner"></span></button>
       </div>
-      <code class="snip">&lt;IconButton appearance="emphasis" size="lg" label="Add"&gt;&lt;AddIcon /&gt;&lt;/IconButton&gt;
-&lt;IconButton appearance="ghost" selected label="Favourite"&gt;&lt;HeartIcon /&gt;&lt;/IconButton&gt;</code>
+      <code class="snip">&lt;Button appearance="emphasis" size="lg" iconOnly label="Add" icon={&lt;AddIcon/&gt;} /&gt;
+&lt;Button appearance="ghost" iconOnly selected label="Favourite" icon={&lt;HeartIcon/&gt;} /&gt;</code>
     </section>
   </section>
 
@@ -481,7 +519,7 @@ color: var(--kuki-sem-text-on-brand);</code>
             ${'{{chevronDown}}'}
           </button>
           <div style="display:flex;gap:16px;align-items:center">
-            <button class="kuki-iconbtn kuki-iconbtn--emphasis kuki-iconbtn--lg" aria-label="Add">${'{{add}}'}</button>
+            <button class="kuki-btn kuki-btn--emphasis kuki-btn--lg kuki-btn--icon-only" aria-label="Add"><span class="kuki-btn__icon">${'{{add}}'}</span></button>
             <span class="kuki-ai-orb" role="img" aria-label="Pet AI"><span class="kuki-ai-orb__sparkle" data-ai-sparkle="../assets/ai-sparkle-animated.svg"></span></span>
           </div>
         </div>
@@ -579,10 +617,17 @@ color: var(--kuki-sem-text-on-brand);</code>
   }
 
   // ---------- theme toggle ----------
-  document.getElementById('themeToggle').addEventListener('click', function () {
+  const themeToggleBtn = document.getElementById('themeToggle');
+  function syncThemeToggleLabel() {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    themeToggleBtn.textContent = isDark ? '🌗 Toggle light mode' : '🌗 Toggle dark mode';
+  }
+  themeToggleBtn.addEventListener('click', function () {
     const r = document.documentElement;
     r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+    syncThemeToggleLabel();
   });
+  syncThemeToggleLabel();
 
   // ---------- color: status table ----------
   const STATUS = [

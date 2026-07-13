@@ -159,6 +159,13 @@
   --kuki-space-section-md: var(--kuki-size-10);
   --kuki-space-section-lg: var(--kuki-size-12);
   --kuki-space-section-xl: var(--kuki-size-14);
+  --kuki-icon-size-3xs: var(--kuki-size-2);
+  --kuki-icon-size-2xs: var(--kuki-size-3);
+  --kuki-icon-size-xs: var(--kuki-size-4);
+  --kuki-icon-size-sm: var(--kuki-size-5);
+  --kuki-icon-size-md: var(--kuki-size-6);
+  --kuki-icon-size-lg: var(--kuki-size-7);
+  --kuki-icon-size-xl: var(--kuki-size-9);
   --kuki-opacity-0: 0;
   --kuki-opacity-5: 0.05;
   --kuki-opacity-10: 0.1;
@@ -215,12 +222,12 @@
   --kuki-shadow-md: 0 2px 8px rgba(16,16,16,0.08);
   --kuki-shadow-lg: 0 8px 24px rgba(16,16,16,0.12);
   --kuki-shadow-xl: 0 16px 40px rgba(16,16,16,0.16);
-  --kuki-gradient-wellness-none: radial-gradient(100% 100% at 50% 50%, #3CC4FF 0%, #2CCAFF 40%, #55CCFF 60%, #D6E9F5 100%);
-  --kuki-gradient-wellness-critical: radial-gradient(100% 100% at 50% 50%, #FF3C3F 0%, #FF4F2C 40%, #FF8555 60%, #F5D6DC 100%);
-  --kuki-gradient-wellness-caution: radial-gradient(100% 100% at 50% 50%, #FFCE09 0%, #F58805 40%, #F1944D 60%, #CFCBD5 100%);
-  --kuki-gradient-wellness-good: radial-gradient(100% 100% at 50% 50%, #06AC00 0%, #54AF00 40%, #7FC916 60%, #FFC93C 100%);
-  --kuki-gradient-wellness-excellent: radial-gradient(100% 100% at 50% 50%, #005807 0%, #007D09 40%, #00960B 60%, #5ABB01 100%);
-  --kuki-gradient-ai-orb: radial-gradient(100% 100% at 50% 50%, #A7F5FF 0%, #00138F 40%, #000000 60%, #000000 100%);
+  --kuki-gradient-wellness-none: radial-gradient(circle at 50% 50%, #3CC4FF 0%, #2CCAFF 40%, #55CCFF 60%, #D6E9F5 100%);
+  --kuki-gradient-wellness-critical: radial-gradient(circle at 50% 50%, #FF3C3F 0%, #FF4F2C 40%, #FF8555 60%, #F5D6DC 100%);
+  --kuki-gradient-wellness-caution: radial-gradient(circle at 50% 50%, #FFCE09 0%, #F58805 40%, #F1944D 60%, #CFCBD5 100%);
+  --kuki-gradient-wellness-good: radial-gradient(circle at 50% 50%, #06AC00 0%, #54AF00 40%, #7FC916 60%, #FFC93C 100%);
+  --kuki-gradient-wellness-excellent: radial-gradient(circle at 50% 50%, #005807 0%, #007D09 40%, #00960B 60%, #5ABB01 100%);
+  --kuki-gradient-ai-orb: radial-gradient(circle at 50% 50%, #A7F5FF 0%, #00138F 40%, #000000 60%, #000000 100%);
 }
 :root, [data-theme="light"] {
   --kuki-sem-surface-canvas: #F3F3F3;
