@@ -38,7 +38,7 @@
   .brand-mark__ver { font-size: 11px; color: var(--kuki-sem-text-muted); }
   nav.tabs { display: flex; flex-direction: column; gap: 2px; flex: 1; }
   .tab-btn {
-    all: unset; cursor: pointer; padding: 10px 12px; border-radius: var(--kuki-radius-md);
+    all: unset; box-sizing: border-box; cursor: pointer; padding: 10px 12px; border-radius: var(--kuki-radius-md);
     font-size: 14px; color: var(--kuki-sem-text-subtle); display: flex; align-items: center; gap: 10px;
   }
   .tab-btn:hover { background: var(--kuki-sem-surface-canvas); color: var(--kuki-sem-text-default); }
@@ -48,7 +48,7 @@
   .sidebar-foot { padding: 12px; }
 
   .theme-toggle {
-    all: unset; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    all: unset; box-sizing: border-box; cursor: pointer; display: flex; align-items: center; gap: 8px;
     padding: 8px 12px; border-radius: var(--kuki-radius-pill);
     border: 1px solid var(--kuki-sem-border-default); font-size: 13px; width: 100%; justify-content: center;
   }
@@ -82,7 +82,10 @@
   .ramp-row .fam-label { width: 90px; font-size: 12px; color: var(--kuki-sem-text-subtle); flex-shrink: 0; }
   .ramp-cell { width: 44px; height: 32px; border-radius: 6px; flex-shrink: 0; }
 
-  .status-table { border: 1px solid var(--kuki-sem-border-subtle); border-radius: var(--kuki-radius-lg); overflow: hidden; }
+  .status-table {
+    background: var(--kuki-sem-surface-raised);
+    border: 1px solid var(--kuki-sem-border-subtle); border-radius: var(--kuki-radius-lg); overflow: hidden;
+  }
   .status-row { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--kuki-sem-border-subtle); font-size: 13px; }
   .status-row:last-child { border-bottom: none; }
   .status-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
