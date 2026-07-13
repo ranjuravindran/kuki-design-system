@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>KuKi Design System</title>
+<link rel="stylesheet" href="../tokens/css/tokens.css" />
+<link rel="stylesheet" href="../react/styles/components.css" />
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--kuki-sem-surface-canvas); color: var(--kuki-sem-text-default);
+    font-family: 'Google Sans Flex', var(--kuki-font-family);
+  }
+  a { color: var(--kuki-sem-text-link); }
+  h1, h2, h3 { margin: 0; }
+  p { margin: 0; }
+  code, pre { font-family: 'SF Mono', 'JetBrains Mono', Menlo, monospace; }
+
+  /* ---------- shell ---------- */
+  .shell { display: flex; min-height: 100vh; }
+  .sidebar {
+    width: 220px; flex-shrink: 0; position: fixed; top: 0; left: 0; height: 100vh;
+    border-right: 1px solid var(--kuki-sem-border-subtle);
+    display: flex; flex-direction: column; padding: 24px 12px;
+    background: var(--kuki-sem-surface-default);
+    overflow-y: auto;
+    z-index: 10;
+  }
+  .brand-mark { display: flex; align-items: center; gap: 8px; padding: 0 12px 20px; }
+  .brand-mark__dot {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: radial-gradient(circle at 32% 30%, var(--kuki-color-accent-300), var(--kuki-color-brand-500) 70%);
+  }
+  .brand-mark__title { font-size: 16px; font-weight: 700; }
+  .brand-mark__ver { font-size: 11px; color: var(--kuki-sem-text-muted); }
+  nav.tabs { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+  .tab-btn {
+    all: unset; cursor: pointer; padding: 10px 12px; border-radius: var(--kuki-radius-md);
+    font-size: 14px; color: var(--kuki-sem-text-subtle); display: flex; align-items: center; gap: 10px;
+  }
+  .tab-btn:hover { background: var(--kuki-sem-surface-canvas); color: var(--kuki-sem-text-default); }
+  .tab-btn.active { background: var(--kuki-sem-surface-brand-subtle); color: var(--kuki-sem-text-brand); font-weight: 600; }
+  .tab-btn:focus-visible { outline: 2px solid var(--kuki-sem-border-focus); outline-offset: 2px; }
+  .tab-btn .icon { width: 18px; height: 18px; flex-shrink: 0; }
+  .sidebar-foot { padding: 12px; }
+
+  .theme-toggle {
+    all: unset; cursor: pointer; display: flex; align-items: center; gap: 8px;
+    padding: 8px 12px; border-radius: var(--kuki-radius-pill);
+    border: 1px solid var(--kuki-sem-border-default); font-size: 13px; width: 100%; justify-content: center;
+  }
+  .theme-toggle:hover { background: var(--kuki-sem-surface-canvas); }
+
+  main { flex: 1; min-width: 0; padding: 48px 56px 120px; max-width: 1180px; margin-left: 220px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .panel-head { margin-bottom: 40px; }
+  .panel-head h1 { font-size: 32px; font-weight: 700; }
+  .panel-head p { margin-top: 10px; font-size: 15px; color: var(--kuki-sem-text-subtle); max-width: 720px; line-height: 1.5; }
+  .kicker { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--kuki-sem-text-brand); font-weight: 600; margin-bottom: 8px; }
+
+  section.block { margin-bottom: 56px; }
+  section.block h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  section.block > .desc { font-size: 14px; color: var(--kuki-sem-text-subtle); margin-bottom: 20px; max-width: 680px; line-height: 1.5; }
+
+  .row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+  .row.tight { gap: 8px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; }
+  .phone { width: 340px; }
+
+  code.snip {
+    display: block; background: var(--kuki-sem-surface-sunken); border: 1px solid var(--kuki-sem-border-subtle);
+    border-radius: var(--kuki-radius-md); padding: 14px 16px; font-size: 12.5px; color: var(--kuki-sem-text-default);
+    white-space: pre; overflow-x: auto; margin-top: 16px; line-height: 1.6;
+  }
+  .swatch { border-radius: 12px; padding: 10px; font-size: 11px; border: 1px solid var(--kuki-sem-border-subtle); }
+  .swatch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .ramp-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .ramp-row .fam-label { width: 90px; font-size: 12px; color: var(--kuki-sem-text-subtle); flex-shrink: 0; }
+  .ramp-cell { width: 44px; height: 32px; border-radius: 6px; flex-shrink: 0; }
+
+  .status-table { border: 1px solid var(--kuki-sem-border-subtle); border-radius: var(--kuki-radius-lg); overflow: hidden; }
+  .status-row { display: flex; align-items: center; gap: 16px; padding: 14px 18px; border-bottom: 1px solid var(--kuki-sem-border-subtle); font-size: 13px; }
+  .status-row:last-child { border-bottom: none; }
+  .status-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .status-name { font-weight: 600; width: 130px; flex-shrink: 0; }
+  .status-hue { width: 90px; color: var(--kuki-sem-text-muted); flex-shrink: 0; }
+  .status-desc { color: var(--kuki-sem-text-subtle); }
+
+  .type-row { display: flex; align-items: baseline; gap: 32px; padding: 14px 4px; border-bottom: 1px solid var(--kuki-sem-border-subtle); }
+  .type-row:last-child { border-bottom: none; }
+  .type-row .label { width: 110px; flex-shrink: 0; font-size: 12px; color: var(--kuki-sem-text-muted); }
+
+  .icon-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 8px; }
+  .icon-cell {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 14px 8px;
+    background: var(--kuki-sem-surface-raised); border-radius: var(--kuki-radius-lg);
+  }
+  .icon-cell .icon { width: 22px; height: 22px; }
+  .icon-cell span { font-size: 10px; color: var(--kuki-sem-text-muted); text-align: center; }
+  .icon { fill: currentColor; }
+
+  .nav-state-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .nav-state-demo { display: flex; align-items: center; gap: 8px; padding: 16px 20px; border-radius: var(--kuki-radius-2xl); color: var(--kuki-sem-icon-subtle); }
+  .nav-state-demo.default { background: transparent; }
+  .nav-state-demo.hover { background: var(--kuki-sem-surface-raised); }
+  .nav-state-demo.pressed { background: var(--kuki-sem-surface-sunken); }
+  .nav-state-demo.focused { outline: 2px solid var(--kuki-sem-border-focus); outline-offset: 2px; }
+  .nav-state-demo .icon { width: 20px; height: 20px; }
+
+  .ai-showcase { display: flex; align-items: center; gap: 32px; flex-wrap: wrap; }
+  .ai-showcase .kuki-ai-orb { cursor: default; }
+  .ai-big .kuki-ai-orb { width: 140px; height: 140px; }
+
+  .do-dont { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .do-dont > div { border-radius: var(--kuki-radius-2xl); padding: 20px; }
+  .do-dont .do { background: var(--kuki-sem-surface-status-good-subtle); }
+  .do-dont .dont { background: var(--kuki-sem-surface-status-critical-subtle); }
+  .do-dont h3 { font-size: 15px; margin-bottom: 10px; }
+  .do-dont ul { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.7; color: var(--kuki-sem-text-default); }
+
+  .stat-cards { display: flex; gap: 16px; flex-wrap: wrap; }
+  .stat-card { background: var(--kuki-sem-surface-raised); border-radius: var(--kuki-radius-lg); padding: 18px 22px; min-width: 130px; }
+  .stat-card .n { font-size: 26px; font-weight: 700; }
+  .stat-card .l { font-size: 12px; color: var(--kuki-sem-text-muted); margin-top: 2px; }
+
+  @media (max-width: 860px) {
+    .shell { flex-direction: column; }
+    .sidebar { position: static; height: auto; width: 100%; flex-direction: row; overflow-x: auto; overflow-y: visible; }
+    nav.tabs { flex-direction: row; }
+    main { padding: 32px 20px 100px; margin-left: 0; }
+  }
+</style>
+</head>
+<body class="kuki">
+
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand-mark">
+      <span class="brand-mark__dot"></span>
+      <div>
+        <div class="brand-mark__title">KuKi</div>
+        <div class="brand-mark__ver">Design System v0.2</div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab-btn active" data-tab="overview">Overview</button>
+      <button class="tab-btn" data-tab="color">Color</button>
+      <button class="tab-btn" data-tab="typography">Typography</button>
+      <button class="tab-btn" data-tab="icons">Icons</button>
+      <button class="tab-btn" data-tab="buttons">Buttons</button>
+      <button class="tab-btn" data-tab="badges">Badges &amp; Chips</button>
+      <button class="tab-btn" data-tab="cards">Cards</button>
+      <button class="tab-btn" data-tab="navigation">Navigation</button>
+      <button class="tab-btn" data-tab="ai">Pet AI</button>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="theme-toggle" id="themeToggle">🌗 Toggle dark mode</button>
+    </div>
+  </aside>
+
+  <main>
+
+  <!-- OVERVIEW -->
+  <section class="panel active" id="panel-overview">
+    <div class="panel-head">
+      <div class="kicker">Design system</div>
+      <h1>KuKi</h1>
+      <p>Intelligent health companion for your furbabies — a token-driven system for Android, iOS, and the web (PWA), built from the KuKi brand mark and the app's own screens. This page mirrors the Figma library 1:1; component classes/props here are exactly what ships in <code>react/src</code>.</p>
+    </div>
+    <section class="block">
+      <div class="stat-cards">
+        <div class="stat-card"><div class="n">191</div><div class="l">primitive tokens</div></div>
+        <div class="stat-card"><div class="n">97</div><div class="l">semantic tokens (light+dark)</div></div>
+        <div class="stat-card"><div class="n">15</div><div class="l">text styles</div></div>
+        <div class="stat-card"><div class="n">33</div><div class="l">icons</div></div>
+        <div class="stat-card"><div class="n">120</div><div class="l">Button variants</div></div>
+        <div class="stat-card"><div class="n">240</div><div class="l">Icon Button variants</div></div>
+      </div>
+    </section>
+    <section class="block">
+      <h2>How this is organized</h2>
+      <p class="desc">Three tiers, same as Figma: primitives (raw ramps) → semantic (role-based, light+dark) → components (consume semantic only). Nothing in <code>react/src</code> touches a primitive or a raw hex value directly.</p>
+      <code class="snip">tokens/generate_tokens.py   ← single source of truth, asserts WCAG AA on save
+tokens/css/tokens.css       ← generated CSS custom properties (light + dark)
+react/src/components/*.tsx  ← typed components, semantic tokens only
+react/styles/components.css ← component CSS
+assets/ai-sparkle-animated.svg ← KuKi's real animated Pet AI icon</code>
+    </section>
+    <section class="block">
+      <h2>Usage guidelines</h2>
+      <div class="do-dont">
+        <div class="do">
+          <h3>Do</h3>
+          <ul>
+            <li>Use semantic tokens (<code>surface/*</code>, <code>text/*</code>) — never raw hex or primitives — in components.</li>
+            <li>Reserve status colors for symptom-free streaks only.</li>
+            <li>Keep buttons as pills; keep cards at <code>radius/container</code> with smoothing on.</li>
+          </ul>
+        </div>
+        <div class="dont">
+          <h3>Don't</h3>
+          <ul>
+            <li>Don't introduce a second typeface — Google Sans Flex only, vary by weight.</li>
+            <li>Don't use pure black for high-emphasis fills — use chocolate ink.</li>
+            <li>Don't invent new status hues — extend the existing five-state model.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </section>
+
+  <!-- COLOR -->
+  <section class="panel" id="panel-color">
+    <div class="panel-head">
+      <div class="kicker">Foundations</div>
+      <h1>Color</h1>
+      <p>Derived from the KuKi mark and login screen: terracotta replaces black as the primary action color, golden cream is the accent, and chocolate ink stands in for black on high-emphasis surfaces. Status colors carry specific meaning tied to symptom-free streaks.</p>
+    </div>
+
+    <section class="block">
+      <h2>Wellness status meaning</h2>
+      <p class="desc">The core semantic mapping behind every Wellness Card.</p>
+      <div class="status-table" id="statusTable"></div>
+    </section>
+
+    <section class="block">
+      <h2>Primitive ramps</h2>
+      <p class="desc">50–950 step scales. Semantic tokens alias these; components never reference them directly.</p>
+      <div id="rampContainer"></div>
+    </section>
+
+    <section class="block">
+      <h2>Semantic surfaces (current theme)</h2>
+      <div class="swatch-grid" id="semanticSwatches"></div>
+      <code class="snip">background: var(--kuki-sem-surface-brand);
+color: var(--kuki-sem-text-on-brand);</code>
+    </section>
+  </section>
+
+  <!-- TYPOGRAPHY -->
+  <section class="panel" id="panel-typography">
+    <div class="panel-head">
+      <div class="kicker">Foundations</div>
+      <h1>Typography</h1>
+      <p>Google Sans Flex, one family across weights ExtraLight–Bold. No secondary typeface, no code font — this is a pet health app, not a code editor. This section is theme-aware; toggle dark mode to see both.</p>
+    </div>
+    <section class="block">
+      <div id="typeRows"></div>
+      <code class="snip">.kuki-wellness__value { font-size: var(--kuki-font-size-6xl); font-weight: var(--kuki-font-weight-extralight); }
+.kuki-metric-card__value { font-size: var(--kuki-font-size-xl); font-weight: var(--kuki-font-weight-semibold); }</code>
+    </section>
+  </section>
+
+  <!-- ICONS -->
+  <section class="panel" id="panel-icons">
+    <div class="panel-head">
+      <div class="kicker">Foundations</div>
+      <h1>Iconography</h1>
+      <p>Material Symbols (Outlined), matching the icon language already used across the app screens.</p>
+    </div>
+    <section class="block">
+      <div class="icon-grid" id="iconGrid"></div>
+    </section>
+  </section>
+
+  <!-- BUTTONS -->
+  <section class="panel" id="panel-buttons">
+    <div class="panel-head">
+      <div class="kicker">Components</div>
+      <h1>Buttons</h1>
+      <p>4 appearances × 2 tones × 5 states × 3 sizes = 120 variants in Figma. A representative set below; full matrix on the Button page.</p>
+    </div>
+    <section class="block">
+      <h2>Appearance</h2>
+      <div class="row">
+        <button class="kuki-btn kuki-btn--primary kuki-btn--lg">Start tracking</button>
+        <button class="kuki-btn kuki-btn--secondary kuki-btn--md">View as Guest</button>
+        <button class="kuki-btn kuki-btn--ghost kuki-btn--md">Skip</button>
+        <button class="kuki-btn kuki-btn--link kuki-btn--md">Learn more</button>
+      </div>
+      <code class="snip">&lt;Button appearance="primary" size="lg"&gt;Start tracking&lt;/Button&gt;
+&lt;Button appearance="secondary"&gt;View as Guest&lt;/Button&gt;
+&lt;Button appearance="ghost"&gt;Skip&lt;/Button&gt;
+&lt;Button appearance="link"&gt;Learn more&lt;/Button&gt;</code>
+    </section>
+    <section class="block">
+      <h2>Tone &amp; state</h2>
+      <div class="row">
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki--destructive">Log seizure</button>
+        <button class="kuki-btn kuki-btn--secondary kuki-btn--md kuki--destructive">Delete record</button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md" disabled>Disabled</button>
+        <button class="kuki-btn kuki-btn--primary kuki-btn--md kuki-btn--loading"><span class="kuki-btn__label">Saving…</span><span class="kuki-btn__spinner"></span></button>
+      </div>
+      <code class="snip">&lt;Button appearance="primary" tone="destructive"&gt;Log seizure&lt;/Button&gt;
+&lt;Button appearance="primary" loading&gt;Saving…&lt;/Button&gt;
+&lt;Button appearance="primary" disabled&gt;Disabled&lt;/Button&gt;</code>
+    </section>
+    <section class="block">
+      <h2>Icon Button</h2>
+      <p class="desc">Same appearance/tone/state system, plus a dedicated <code>emphasis</code> appearance (warm chocolate) for the FAB, and a <code>selected</code> boolean.</p>
+      <div class="row">
+        <button class="kuki-iconbtn kuki-iconbtn--emphasis kuki-iconbtn--lg" aria-label="Add">${'{{add}}'}</button>
+        <button class="kuki-iconbtn kuki-iconbtn--primary kuki-iconbtn--md" aria-label="Edit">${'{{edit}}'}</button>
+        <button class="kuki-iconbtn kuki-iconbtn--secondary kuki-iconbtn--md" aria-label="Search">${'{{search}}'}</button>
+        <button class="kuki-iconbtn kuki-iconbtn--ghost kuki-iconbtn--md" aria-pressed="true" aria-label="Favourite selected">${'{{favorite}}'}</button>
+        <button class="kuki-iconbtn kuki-iconbtn--secondary kuki-iconbtn--md" aria-label="Delete" disabled>${'{{close}}'}</button>
+      </div>
+      <code class="snip">&lt;IconButton appearance="emphasis" size="lg" label="Add"&gt;&lt;AddIcon /&gt;&lt;/IconButton&gt;
+&lt;IconButton appearance="ghost" selected label="Favourite"&gt;&lt;HeartIcon /&gt;&lt;/IconButton&gt;</code>
+    </section>
+  </section>
+
+  <!-- BADGES & CHIPS -->
+  <section class="panel" id="panel-badges">
+    <div class="panel-head">
+      <div class="kicker">Components</div>
+      <h1>Badges &amp; Chips</h1>
+      <p>Badges are tight rectangular tags (sex, spayed/neutered, due/overdue status). Chips are pill-shaped with an optional icon, used on card headers.</p>
+    </div>
+    <section class="block">
+      <h2>Badge</h2>
+      <div class="row tight">
+        <span class="kuki-badge kuki-tone--pink kuki-tone--bold">Female</span>
+        <span class="kuki-badge kuki-tone--pink kuki-tone--subtle">Spayed</span>
+        <span class="kuki-badge kuki-tone--info kuki-tone--bold">Male</span>
+        <span class="kuki-badge kuki-tone--critical kuki-tone--subtle">Overdue</span>
+        <span class="kuki-badge kuki-tone--excellent kuki-tone--subtle">Up to date</span>
+        <span class="kuki-badge kuki-tone--caution kuki-tone--bold">Due soon</span>
+      </div>
+      <code class="snip">&lt;Badge tone="pink" emphasis="bold"&gt;Female&lt;/Badge&gt;
+&lt;Badge tone="critical" emphasis="subtle"&gt;Overdue&lt;/Badge&gt;</code>
+    </section>
+    <section class="block">
+      <h2>Chip</h2>
+      <div class="row tight">
+        <span class="kuki-chip kuki-tone--critical kuki-tone--subtle">${'{{timer}}'} Seizure Monitor</span>
+        <span class="kuki-chip kuki-tone--turquoise kuki-tone--subtle">${'{{scale}}'} Weight</span>
+        <span class="kuki-chip kuki-tone--pink kuki-tone--subtle">${'{{syringe}}'} Next Vaccine</span>
+        <span class="kuki-chip kuki-tone--info kuki-tone--subtle">${'{{run}}'} Activity</span>
+        <span class="kuki-chip kuki-tone--good kuki-tone--subtle">${'{{restaurant}}'} Nutrition</span>
+        <span class="kuki-chip kuki-tone--violet kuki-tone--subtle">${'{{bedtime}}'} Sleep</span>
+        <span class="kuki-chip kuki-tone--excellent kuki-tone--subtle">${'{{pill}}'} Medication</span>
+      </div>
+      <code class="snip">&lt;Chip tone="turquoise" icon={&lt;ScaleIcon /&gt;}&gt;Weight&lt;/Chip&gt;</code>
+    </section>
+  </section>
+
+  <!-- CARDS -->
+  <section class="panel" id="panel-cards">
+    <div class="panel-head">
+      <div class="kicker">Components</div>
+      <h1>Cards</h1>
+      <p>Every card corner uses the squircle utility (<code>preview/squircle.js</code>) — a true superellipse clip-path approximating Figma's native corner smoothing, since CSS <code>border-radius</code> alone has no smoothing control.</p>
+    </div>
+    <section class="block">
+      <h2>Wellness Card — the five states</h2>
+      <p class="desc">Gradient is centered and symmetric; the pastel edge color reaches all four corners evenly.</p>
+      <div class="row" style="align-items:flex-start">
+        <div class="kuki-wellness kuki-wellness--none phone" data-squircle="32">
+          <div class="kuki-wellness__title">Seizure Streak</div>
+          <div class="kuki-wellness__value">–</div>
+          <div class="kuki-wellness__subtitle">No seizures have been recorded</div>
+        </div>
+        <div class="kuki-wellness kuki-wellness--critical phone" data-squircle="32">
+          <div class="kuki-wellness__title">Seizure Streak</div>
+          <div class="kuki-wellness__value">0 days</div>
+          <div class="kuki-wellness__subtitle">2 grand mal seizures today</div>
+        </div>
+      </div>
+      <div class="row" style="align-items:flex-start; margin-top:12px">
+        <div class="kuki-wellness kuki-wellness--caution phone" data-squircle="32">
+          <div class="kuki-wellness__title">Seizure Streak</div>
+          <div class="kuki-wellness__value">2 days</div>
+          <div class="kuki-wellness__subtitle">1 focal seizure this week</div>
+        </div>
+        <div class="kuki-wellness kuki-wellness--good phone" data-squircle="32">
+          <div class="kuki-wellness__title">Seizure Streak</div>
+          <div class="kuki-wellness__value">5 days</div>
+          <div class="kuki-wellness__subtitle">No seizures in the last 5 days</div>
+        </div>
+        <div class="kuki-wellness kuki-wellness--excellent phone" data-squircle="32">
+          <div class="kuki-wellness__title">Seizure Streak</div>
+          <div class="kuki-wellness__value">14 days</div>
+          <div class="kuki-wellness__subtitle">No seizures in the last 14 days</div>
+        </div>
+      </div>
+      <code class="snip">&lt;WellnessCard status="critical" title="Seizure Streak" value="0 days"
+  subtitle="2 grand mal seizures today" /&gt;</code>
+    </section>
+
+    <section class="block">
+      <h2>Metric Cards</h2>
+      <div class="grid2 phone">
+        <div class="kuki-metric-card" data-squircle="32">
+          <span class="kuki-chip kuki-tone--turquoise kuki-tone--subtle">Weight</span>
+          <div><div class="kuki-metric-card__value">2.8 kg</div><div class="kuki-metric-card__sub">Last weighed today</div></div>
+        </div>
+        <div class="kuki-metric-card" data-squircle="32">
+          <span class="kuki-chip kuki-tone--pink kuki-tone--subtle">Next Vaccine</span>
+          <div><div class="kuki-metric-card__value">12 Days</div><div class="kuki-metric-card__sub">DHPP Booster</div></div>
+        </div>
+        <div class="kuki-metric-card kuki-metric-card--empty" data-squircle="32">
+          <span class="kuki-chip kuki-tone--violet kuki-tone--subtle">Sleep</span>
+          <div><div class="kuki-metric-card__value">No logs</div><div class="kuki-metric-card__sub">Log today's sleep</div></div>
+        </div>
+        <div class="kuki-metric-card" data-squircle="32">
+          <span class="kuki-chip kuki-tone--excellent kuki-tone--subtle">Medication</span>
+          <div><div class="kuki-metric-card__value">12:00 PM</div><div class="kuki-metric-card__sub">3 medicines</div></div>
+        </div>
+      </div>
+      <code class="snip">&lt;MetricCard metric="sleep" label="Sleep" value="No logs" sub="Log today's sleep" empty /&gt;</code>
+    </section>
+
+    <section class="block">
+      <h2>Card with list rows</h2>
+      <div class="kuki-card phone" data-squircle="32">
+        <div class="kuki-section-header">
+          <span class="kuki-section-header__title">Health Summary</span>
+          <button class="kuki-section-header__action">Edit</button>
+        </div>
+        <div class="kuki-list-row">
+          <div><div class="kuki-list-row__title">Leviteracetam 1.8mL</div><div class="kuki-list-row__subtitle">8 AM, 4 PM, 12 AM</div></div>
+          <div class="kuki-list-row__right"><div class="kuki-list-row__title">3x Daily</div></div>
+        </div>
+        <div class="kuki-list-row">
+          <div><div class="kuki-list-row__title">Combined</div></div>
+          <div class="kuki-list-row__right"><div class="kuki-list-row__title">8 Jul '26</div><div class="kuki-list-row__valuesub kuki-list-row__valuesub--critical">Overdue by 3 days</div></div>
+        </div>
+      </div>
+      <code class="snip">&lt;SectionHeader title="Health Summary" action="Edit" /&gt;
+&lt;ListRow title="Combined" value="8 Jul '26" valueSub="Overdue by 3 days" valueSubTone="critical" /&gt;</code>
+    </section>
+  </section>
+
+  <!-- NAVIGATION -->
+  <section class="panel" id="panel-navigation">
+    <div class="panel-head">
+      <div class="kicker">Components</div>
+      <h1>Navigation</h1>
+      <p>Segmented top nav (5 tabs, one expanded) plus a bottom bar with pet switcher, add FAB, and Pet AI entry point.</p>
+    </div>
+    <section class="block">
+      <h2>Top Nav</h2>
+      <div class="phone">
+        <nav class="kuki-topnav" id="topNavDemo">
+          <button class="kuki-topnav__tab" aria-current="page">${'{{home}}'}<span>Home</span></button>
+          <button class="kuki-topnav__tab">${'{{favorite}}'}</button>
+          <button class="kuki-topnav__tab">${'{{sunny}}'}</button>
+          <button class="kuki-topnav__tab">${'{{folder}}'}</button>
+          <button class="kuki-topnav__tab">${'{{pets}}'}</button>
+        </nav>
+      </div>
+      <code class="snip">&lt;TopNav tabs={tabs} active="home" onTabChange={setActive} /&gt;
+/* real :hover / :focus-visible / :active states — try tabbing to the nav above */</code>
+    </section>
+    <section class="block">
+      <h2>Nav Tab — interaction states</h2>
+      <p class="desc">Documented explicitly (Figma has a matching "Nav Tab" component with the same four states).</p>
+      <div class="nav-state-row">
+        <div class="nav-state-demo default">${'{{home}}'}</div>
+        <div class="nav-state-demo hover">${'{{home}}'}</div>
+        <div class="nav-state-demo pressed">${'{{home}}'}</div>
+        <div class="nav-state-demo focused">${'{{home}}'}</div>
+      </div>
+      <code class="snip">.kuki-topnav__tab:hover, :focus-visible, :active { /* see components.css */ }</code>
+    </section>
+    <section class="block">
+      <h2>Bottom Bar</h2>
+      <div class="phone">
+        <div class="kuki-bottombar">
+          <button class="kuki-pet-switcher">
+            <span class="kuki-avatar kuki-avatar--sm"></span>
+            <span>Kingini</span>
+            ${'{{chevronDown}}'}
+          </button>
+          <div style="display:flex;gap:16px;align-items:center">
+            <button class="kuki-iconbtn kuki-iconbtn--emphasis kuki-iconbtn--lg" aria-label="Add">${'{{add}}'}</button>
+            <span class="kuki-ai-orb" role="img" aria-label="Pet AI"><span class="kuki-ai-orb__sparkle" data-ai-sparkle="../assets/ai-sparkle-animated.svg"></span></span>
+          </div>
+        </div>
+      </div>
+      <code class="snip">&lt;BottomBar petName="Kingini" onSwitchPet={...} onAdd={...} onAI={...} /&gt;</code>
+    </section>
+  </section>
+
+  <!-- AI -->
+  <section class="panel" id="panel-ai">
+    <div class="panel-head">
+      <div class="kicker">Components</div>
+      <h1>Pet AI icon</h1>
+      <p>The swirling background is a CSS approximation of a shader — a blurred, rotating conic gradient screen-blended over a radial base (no WebGL). The sparkle burst on top is KuKi's real animated asset, inlined at runtime with uniquified ids (<code>preview/ai-orb.js</code>) so its CSS keyframes actually run — browsers freeze animated SVGs loaded via plain <code>&lt;img&gt;</code> at their first frame — and so multiple orbs on one page never collide.</p>
+    </div>
+    <section class="block ai-big">
+      <div class="ai-showcase">
+        <span class="kuki-ai-orb" role="img" aria-label="Pet AI">
+          <span class="kuki-ai-orb__sparkle" data-ai-sparkle="../assets/ai-sparkle-animated.svg"></span>
+        </span>
+        <div style="max-width:420px; font-size:13px; color:var(--kuki-sem-text-subtle); line-height:1.6">
+          Three sparkles fire in sequence on a 1.9s loop, per the source animation's own embedded <code>@keyframes</code>. Respects <code>prefers-reduced-motion</code> for the shader background.
+        </div>
+      </div>
+      <code class="snip">&lt;AIOrb sparkleSrc="/assets/ai-sparkle-animated.svg" label="Pet AI" onClick={openAssistant} /&gt;</code>
+    </section>
+  </section>
+
+  </main>
+</div>
+
+<script src="squircle.js"></script>
+<script src="ai-orb.js"></script>
+<script>
+  // ---------- icon library (Material Symbols outlined, matches Figma) ----------
+  const ICONS = {
+    home: 'M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z',
+    favorite: 'm480-120-58-52q-101-91-167-157T150-447.5Q111-500 95.5-544T80-634q0-94 63-157t157-63q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 46-15.5 90T810-447.5Q771-395 705-329T538-172l-58 52Zm0-108q96-86 158-147.5t98-107q36-45.5 50-81t14-70.5q0-60-40-100t-100-40q-47 0-87 26.5T518-680h-76q-15-41-55-67.5T300-774q-60 0-100 40t-40 100q0 35 14 70.5t50 81q36 45.5 98 107T480-228Zm0-273Z',
+    sunny: 'M440-760v-160h80v160h-80Zm266 110-55-55 112-115 56 57-113 113Zm54 210v-80h160v80H760ZM440-40v-160h80v160h-80ZM254-652 140-763l57-56 113 113-56 54Zm508 512L651-255l54-54 114 110-57 59ZM40-440v-80h160v80H40Zm157 300-56-57 112-112 29 27 29 28-114 114Zm113-170q-70-70-70-170t70-170q70-70 170-70t170 70q70 70 70 170t-70 170q-70 70-170 70t-170-70Zm283-57q47-47 47-113t-47-113q-47-47-113-47t-113 47q-47 47-47 113t47 113q47 47 113 47t113-47ZM480-480Z',
+    folder: 'M160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h240l80 80h320q33 0 56.5 23.5T880-640v400q0 33-23.5 56.5T800-160H160Zm0-80h640v-400H447l-80-80H160v480Zm0 0v-480 480Z',
+    pets: 'M180-475q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29Zm109-189q-29-29-29-71t29-71q29-29 71-29t71 29q29 29 29 71t-29 71q-29 29-71 29t-71-29Zm240 0q-29-29-29-71t29-71q29-29 71-29t71 29q29 29 29 71t-29 71q-29 29-71 29t-71-29Zm251 189q-42 0-71-29t-29-71q0-42 29-71t71-29q42 0 71 29t29 71q0 42-29 71t-71 29ZM266-75q-45 0-75.5-34.5T160-191q0-52 35.5-91t70.5-77q29-31 50-67.5t50-68.5q22-26 51-43t63-17q34 0 63 16t51 42q28 32 49.5 69t50.5 69q35 38 70.5 77t35.5 91q0 47-30.5 81.5T694-75q-54 0-107-9t-107-9q-54 0-107 9t-107 9Z',
+    add: 'M440-440H200v-80h240v-240h80v240h240v80H520v240h-80v-240Z',
+    keyboard_arrow_down: 'M480-344 240-584l56-56 184 184 184-184 56 56-240 240Z',
+    timer: 'M360-840v-80h240v80H360Zm80 440h80v-240h-80v240Zm-99.5 291.5Q275-137 226-186t-77.5-114.5Q120-366 120-440t28.5-139.5Q177-645 226-694t114.5-77.5Q406-800 480-800q62 0 119 20t107 58l56-56 56 56-56 56q38 50 58 107t20 119q0 74-28.5 139.5T734-186q-49 49-114.5 77.5T480-80q-74 0-139.5-28.5ZM678-242q82-82 82-198t-82-198q-82-82-198-82t-198 82q-82 82-82 198t82 198q82 82 198 82t198-82ZM480-440Z',
+    play_arrow: 'M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z',
+    stop: 'M320-640v320-320Zm-80 400v-480h480v480H240Zm80-80h320v-320H320v320Z',
+    scale: 'M80-80q0-111 29.5-189.5T185-400q46-52 103-80.5T400-520v-120q-137-17-228.5-84.5T80-880h800q0 88-91.5 155.5T560-640v120q55 11 112 39.5T775-400q46 52 75.5 130.5T880-80H640v-80h155q-18-152-113.5-220T480-448q-106 0-201.5 68T165-160h155v80H80Zm562-659.5Q713-764 755-800H205q42 36 113 60.5T480-715q91 0 162-24.5ZM480-80q-33 0-56.5-23.5T400-160q0-17 6.5-31t17.5-25q24-24 81-50.5T640-320q-28 78-54 135t-50 81q-11 11-25 17.5T480-80Zm0-635Z',
+    syringe: 'M156-513q-11-12-11-28.5t11-28.5l112-112-43-43-12 12q-12 12-28.5 12T156-713q-11-11-11-28t11-28l80-80q12-12 28.5-12t28.5 12q11 11 11 28t-11 28l-12 12 43 43 112-112q12-12 28.5-12t28.5 12q12 12 12 28.5T493-793l-27 26 295 295q23 23 23 56.5T761-359l-28 29 189 188H808L676-274l-28 29q-23 23-56.5 23T535-245L240-540l-27 27q-12 11-28.5 11T156-513Zm140-83 295 295 113-114-60-61-56 56q-12 11-28.5 11.5T532-419q-12-12-12-28.5t12-28.5l56-56-60-60-56 56q-12 11-28.5 11T415-536q-11-12-11-28.5t11-28.5l56-56-61-61-114 114Zm0 0 114-114-114 114Z',
+    run: 'M520-40v-240l-84-80-40 176-276-56 16-80 192 40 64-324-72 28v136h-80v-188l158-68q35-15 51.5-19.5T480-720q21 0 39 11t29 29l40 64q26 42 70.5 69T760-520v80q-66 0-123.5-27.5T540-540l-24 120 84 80v300h-80Zm-36.5-723.5Q460-787 460-820t23.5-56.5Q507-900 540-900t56.5 23.5Q620-853 620-820t-23.5 56.5Q573-740 540-740t-56.5-23.5Z',
+    restaurant: 'M280-80v-366q-51-14-85.5-56T160-600v-280h80v280h40v-280h80v280h40v-280h80v280q0 56-34.5 98T360-446v366h-80Zm400 0v-320H560v-280q0-83 58.5-141.5T760-880v800h-80Z',
+    bedtime: 'M484-80q-84 0-157.5-32t-128-86.5Q144-253 112-326.5T80-484q0-146 93-257.5T410-880q-18 99 11 193.5T521-521q71 71 165.5 100T880-410q-26 144-138 237T484-80Zm0-80q88 0 163-44t118-121q-86-8-163-43.5T464-465q-61-61-97-138t-43-163q-77 43-120.5 118.5T160-484q0 135 94.5 229.5T484-160Zm-20-305Z',
+    pill: 'M345-120q-94 0-159.5-65.5T120-345q0-45 17-86t49-73l270-270q32-32 73-49t86-17q94 0 159.5 65.5T840-615q0 45-17 86t-49 73L504-186q-32 32-73 49t-86 17Zm266-286 107-106q20-20 31-47t11-56q0-60-42.5-102.5T615-760q-29 0-56 11t-47 31L406-611l205 205ZM345-200q29 0 56-11t47-31l106-107-205-205-107 106q-20 20-31 47t-11 56q0 60 42.5 102.5T345-200Z',
+    search: 'M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Z',
+    edit: 'M200-200h57l391-391-57-57-391 391v57Zm-80 80v-170l528-527q12-11 26.5-17t30.5-6q16 0 31 6t26 18l55 56q12 11 17.5 26t5.5 30q0 16-5.5 30.5T817-647L290-120H120Z',
+    close: 'm256-200-56-56 224-224-224-224 56-56 224 224 224-224 56 56-224 224 224 224-56 56-224-224-224 224Z',
+    check: 'M382-240 154-468l57-57 171 171 367-367 57 57-424 424Z',
+    chevron_right: 'M504-480 320-664l56-56 240 240-240 240-56-56 184-184Z',
+    account_circle: 'M234-276q51-39 114-61.5T480-360q69 0 132 22.5T726-276q35-41 54.5-93T800-480q0-133-93.5-226.5T480-800q-133 0-226.5 93.5T160-480q0 59 19.5 111t54.5 93Zm146.5-204.5Q340-521 340-580t40.5-99.5Q421-720 480-720t99.5 40.5Q620-639 620-580t-40.5 99.5Q539-440 480-440t-99.5-40.5ZM480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm100-95.5q47-15.5 86-44.5-39-29-86-44.5T480-280q-53 0-100 15.5T294-220q39 29 86 44.5T480-160q53 0 100-15.5ZM523-537q17-17 17-43t-17-43q-17-17-43-17t-43 17q-17 17-17 43t17 43q17 17 43 17t43-17Zm-43-43Zm0 360Z',
+    settings: 'm370-80-16-128q-13-5-24.5-12T307-235l-119 50L78-375l103-78q-1-7-1-13.5v-27q0-6.5 1-13.5L78-585l110-190 119 50q11-8 23-15t24-12l16-128h220l16 128q13 5 24.5 12t22.5 15l119-50 110 190-103 78q1 7 1 13.5v27q0 6.5-2 13.5l103 78-110 190-118-50q-11 8-23 15t-24 12L590-80H370Zm70-80h79l14-106q31-8 57.5-23.5T639-327l99 41 39-68-86-65q5-14 7-29.5t2-31.5q0-16-2-31.5t-7-29.5l86-65-39-68-99 42q-22-23-48.5-38.5T533-694l-13-106h-79l-14 106q-31 8-57.5 23.5T321-633l-99-41-39 68 86 64q-5 15-7 30t-2 32q0 16 2 31t7 30l-86 65 39 68 99-42q22 23 48.5 38.5T427-266l13 106Zm42-180q58 0 99-41t41-99q0-58-41-99t-99-41q-59 0-99.5 41T342-480q0 58 40.5 99t99.5 41Zm-2-140Z',
+    notifications: 'M160-200v-80h80v-280q0-83 50-147.5T420-792v-28q0-25 17.5-42.5T480-880q25 0 42.5 17.5T540-820v28q80 20 130 84.5T720-560v280h80v80H160Zm320-300Zm0 420q-33 0-56.5-23.5T400-160h160q0 33-23.5 56.5T480-80ZM320-280h320v-280q0-66-47-113t-113-47q-66 0-113 47t-47 113v280Z',
+    water_drop: 'M491-200q12-1 20.5-9.5T520-230q0-14-9-22.5t-23-7.5q-41 3-87-22.5T343-375q-2-11-10.5-18t-19.5-7q-14 0-23 10.5t-6 24.5q17 91 80 130t127 35Zm-239.5 26Q160-268 160-408q0-100 79.5-217.5T480-880q161 137 240.5 254.5T800-408q0 140-91.5 234T480-80q-137 0-228.5-94ZM652-230.5Q720-301 720-408q0-73-60.5-165T480-774Q361-665 300.5-573T240-408q0 107 68 177.5T480-160q104 0 172-70.5ZM480-480Z',
+    cardiology: 'M300-840q52 0 99 22t81 62q34-40 81-62t99-22q94 0 157 63t63 157q0 5-.5 10t-.5 10h-80q1-5 1-10v-10q0-60-40-100t-100-40q-47 0-87 26.5T518-666h-76q-15-41-55-67.5T300-760q-60 0-100 40t-40 100v10q0 5 1 10H81q0-5-.5-10t-.5-10q0-94 63-157t157-63Zm-88 480h112q32 31 70 67t86 79q48-43 86-79t70-67h113q-38 42-90 91T538-158l-58 52-58-52q-69-62-120.5-111T212-360Zm230 40q13 0 22.5-7.5T478-347l54-163 35 52q5 8 14 13t19 5h320v-80H623l-69-102q-6-9-15.5-13.5T518-640q-13 0-22.5 7.5T482-613l-54 162-34-51q-5-8-14-13t-19-5H40v80h297l69 102q6 9 15.5 13.5T442-320Zm38-167Z',
+    stethoscope: 'M540-80q-108 0-184-76t-76-184v-23q-86-14-143-80.5T80-600v-240h120v-40h80v160h-80v-40h-40v160q0 66 47 113t113 47q66 0 113-47t47-113v-160h-40v40h-80v-160h80v40h120v240q0 90-57 156.5T360-363v23q0 75 52.5 127.5T540-160q75 0 127.5-52.5T720-340v-67q-35-12-57.5-43T640-520q0-50 35-85t85-35q50 0 85 35t35 85q0 39-22.5 70T800-407v67q0 108-76 184T540-80Zm248.5-411.5Q800-503 800-520t-11.5-28.5Q777-560 760-560t-28.5 11.5Q720-537 720-520t11.5 28.5Q743-480 760-480t28.5-11.5ZM760-520Z',
+    calendar_month: 'M200-80q-33 0-56.5-23.5T120-160v-560q0-33 23.5-56.5T200-800h40v-80h80v80h320v-80h80v80h40q33 0 56.5 23.5T840-720v560q0 33-23.5 56.5T760-80H200Zm0-80h560v-400H200v400Zm0-480h560v-80H200v80Zm0 0v-80 80Zm280 240q-17 0-28.5-11.5T440-440q0-17 11.5-28.5T480-480q17 0 28.5 11.5T520-440q0 17-11.5 28.5T480-400Zm-188.5-11.5Q280-423 280-440t11.5-28.5Q303-480 320-480t28.5 11.5Q360-457 360-440t-11.5 28.5Q337-400 320-400t-28.5-11.5ZM640-400q-17 0-28.5-11.5T600-440q0-17 11.5-28.5T640-480q17 0 28.5 11.5T680-440q0 17-11.5 28.5T640-400ZM480-240q-17 0-28.5-11.5T440-280q0-17 11.5-28.5T480-320q17 0 28.5 11.5T520-280q0 17-11.5 28.5T480-240Zm-188.5-11.5Q280-263 280-280t11.5-28.5Q303-320 320-320t28.5 11.5Q360-297 360-280t-11.5 28.5Q337-240 320-240t-28.5-11.5ZM640-240q-17 0-28.5-11.5T600-280q0-17 11.5-28.5T640-320q17 0 28.5 11.5T680-280q0 17-11.5 28.5T640-240Z',
+    monitor_weight: 'M480-480q50 0 85-35t35-85q0-50-35-85t-85-35q-50 0-85 35t-35 85q0 50 35 85t85 35Zm-74-106q-6-6-6-14t6-14q6-6 14-6t14 6q6 6 6 14t-6 14q-6 6-14 6t-14-6Zm60 0q-6-6-6-14t6-14q6-6 14-6t14 6q6 6 6 14t-6 14q-6 6-14 6t-14-6Zm60 0q-6-6-6-14t6-14q6-6 14-6t14 6q6 6 6 14t-6 14q-6 6-14 6t-14-6ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h560q33 0 56.5 23.5T840-760v560q0 33-23.5 56.5T760-120H200Zm0-80h560v-560H200v560Zm0-560v560-560Z',
+    circle: 'M480-80q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Zm0-80q134 0 227-93t93-227q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 134 93 227t227 93Zm0-320Z',
+    logout: 'M200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h280v80H200v560h280v80H200Zm440-160-55-58 102-102H360v-80h327L585-622l55-58 200 200-200 200Z',
+  };
+  function iconSVG(name, size) {
+    size = size || 20;
+    const d = ICONS[name];
+    if (!d) return '';
+    return `<svg class="icon" width="${size}" height="${size}" viewBox="0 -960 960 960"><path d="${d}"/></svg>`;
+  }
+  // resolve {{name}} placeholders written directly in the HTML above
+  document.body.innerHTML = document.body.innerHTML.replace(/\$\{'\{\{(\w+)\}\}'\}/g, (_, name) =>
+    name === 'run' ? iconSVG('run') : name === 'chevronDown' ? iconSVG('keyboard_arrow_down', 16) : iconSVG(name)
+  );
+
+  // ---------- tabs ----------
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  tabBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tabBtns.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.panel').forEach((p) => p.classList.remove('active'));
+      document.getElementById('panel-' + btn.dataset.tab).classList.add('active');
+      initSquircles();
+      history.replaceState(null, '', '#' + btn.dataset.tab);
+    });
+  });
+  const hash = location.hash.replace('#', '');
+  if (hash && document.getElementById('panel-' + hash)) {
+    document.querySelector(`.tab-btn[data-tab="${hash}"]`).click();
+  }
+
+  // ---------- theme toggle ----------
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    const r = document.documentElement;
+    r.dataset.theme = r.dataset.theme === 'dark' ? 'light' : 'dark';
+  });
+
+  // ---------- color: status table ----------
+  const STATUS = [
+    ['none', 'blue', 'No data yet — new user, nothing logged'],
+    ['critical', 'red', 'Severe symptom or seizure occurred today'],
+    ['caution', 'amber', '1–3 symptom-free days'],
+    ['good', 'lime', '4–7 symptom-free days'],
+    ['excellent', 'dark green', '8+ symptom-free days'],
+  ];
+  document.getElementById('statusTable').innerHTML = STATUS.map(([s, hue, desc]) => `
+    <div class="status-row">
+      <span class="status-dot" style="background:var(--kuki-sem-surface-status-${s})"></span>
+      <span class="status-name">status-${s}</span>
+      <span class="status-hue">${hue}</span>
+      <span class="status-desc">${desc}</span>
+    </div>`).join('');
+
+  // ---------- color: primitive ramps ----------
+  const RAMPS = {
+    neutral: 11, brand: 11, accent: 11, chocolate: 5, red: 11, amber: 11, lime: 11, green: 11, blue: 11,
+    turquoise: 5, pink: 5, violet: 5,
+  };
+  const STEP_SETS = {
+    11: ['50','100','200','300','400','500','600','700','800','900','950'],
+    5: ['100','300','500','700','900'],
+  };
+  document.getElementById('rampContainer').innerHTML = Object.entries(RAMPS).map(([fam, count]) => {
+    const steps = STEP_SETS[count];
+    return `<div class="ramp-row"><span class="fam-label">${fam}</span>${steps.map(s =>
+      `<span class="ramp-cell" style="background:var(--kuki-color-${fam}-${s})" title="${fam}/${s}"></span>`).join('')}</div>`;
+  }).join('');
+
+  // ---------- color: semantic swatches ----------
+  const SEMANTIC = ['surface/default','surface/raised','surface/brand','surface/brand-subtle','surface/emphasis',
+    'surface/accent-subtle','surface/status-critical','surface/status-caution','surface/status-good',
+    'surface/status-excellent','surface/status-none','text/link'];
+  document.getElementById('semanticSwatches').innerHTML = SEMANTIC.map(name => {
+    const css = '--kuki-sem-' + name.replace(/\//g, '-');
+    return `<div class="swatch" style="background:var(${css});color:var(--kuki-sem-text-default)">${name}</div>`;
+  }).join('');
+
+  // ---------- typography ----------
+  const TYPE_STYLES = [
+    ['display/stat', '6xl', 'extralight'], ['display/md', '5xl', 'semibold'],
+    ['heading/h1', '4xl', 'semibold'], ['heading/h2', '3xl', 'semibold'],
+    ['heading/h3', '2xl', 'semibold'], ['heading/h4', 'xl', 'semibold'],
+    ['title/lg', 'lg', 'semibold'], ['title/md', 'md', 'semibold'],
+    ['body/lg', 'lg', 'regular'], ['body/md', 'md', 'regular'], ['body/sm', 'sm', 'regular'],
+    ['label/md', 'sm', 'medium'], ['label/sm', 'xs', 'medium'],
+    ['caption', 'xs', 'regular'], ['overline', '2xs', 'light'],
+  ];
+  document.getElementById('typeRows').innerHTML = TYPE_STYLES.map(([name, size, weight]) => `
+    <div class="type-row">
+      <span class="label">${name}</span>
+      <span style="font-size:var(--kuki-font-size-${size});font-weight:var(--kuki-font-weight-${weight});line-height:var(--kuki-line-height-${size})">The quick brown fox jumps over the lazy dog.</span>
+    </div>`).join('');
+
+  // ---------- icons grid ----------
+  document.getElementById('iconGrid').innerHTML = Object.keys(ICONS).map(name =>
+    `<div class="icon-cell">${iconSVG(name, 22)}<span>${name}</span></div>`).join('');
+
+  initSquircles();
+  hydrateAIOrbs();
+</script>
+</body>
+</html>
